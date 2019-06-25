@@ -123,7 +123,7 @@ namespace Tmds.Utils
             HostFilename = Process.GetCurrentProcess().MainModule.FileName;
 
             // application is running as 'dotnet exec'
-            if (HostFilename.EndsWith("/dotnet"))
+            if (HostFilename.EndsWith("/dotnet") || HostFilename.EndsWith("\\dotnet.exe"))
             {
                 string execFunctionAssembly = typeof(ExecFunction).Assembly.Location;
 
