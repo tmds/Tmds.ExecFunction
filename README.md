@@ -1,3 +1,6 @@
+[![Travis](https://api.travis-ci.org/tmds/Tmds.ExecFunction.svg?branch=master)](https://travis-ci.org/tmds/Tmds.ExecFunction)
+[![NuGet](https://img.shields.io/nuget/v/Tmds.ExecFunction.svg)](https://www.nuget.org/packages/Tmds.ExecFunction)
+
 # Tmds.ExecFunction
 
 Tmds.ExecFunction is a library that makes it simple to execute a function in a separate process.
