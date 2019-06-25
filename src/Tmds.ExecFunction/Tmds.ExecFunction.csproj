@@ -5,7 +5,7 @@
     <TargetFramework>netstandard2.0</TargetFramework>
     <VersionPrefix>0.1.0</VersionPrefix>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-    <Description>Tmds.ExecFunction Library</Description>
+    <Description>Execute a function in a separate process</Description>
     <Authors>Tom Deseyn</Authors>
     <RepositoryType>git</RepositoryType>
     <RepositoryUrl>https://github.com/tmds/Tmds.ExecFunction</RepositoryUrl>
