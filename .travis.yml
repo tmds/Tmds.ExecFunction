@@ -1,0 +1,20 @@
+language: csharp
+mono: none
+dist: xenial
+dotnet: 2.2
+
+env:
+  global:
+    - DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
+    - DOTNET_CLI_TELEMETRY_OPTOUT: 1
+    - secure: "VC5zjaHJ4mLxsyHtmZKo+HJZuE9W2+EheOgUe1HoFFT6RubIHWM/MHWphqoDgvqco87fNxJlIHK92MYc+60SDOsKaarWe7Ki9cg3J5QKOQHurPqj3n8A2DaaxaCeszNLWt6awoyW4L3sqLf6grUziiAPz9/018S2x8V1VLk4Sd1OMnyilkxXOqoRYjpWHsi6V/sLu0jo8BxevnnLRJpj8xMIlVnJEbYv+Y9lAklxqjUaCKhqZk6vD0y3WLIU/hzOyoUvMPgdhIwUEkh4uOrh3IFmQDSTktMO/M/wROzGCjM6sb6p5TgO7aaiRsqPiHZ/xDvdtmnu++KYtsP42F1qBY/v6KiOoiZ4iIxgHe30LyOD5nnLdP4jL5pVq8vBPAdma0ksJ01ItldL60L9b1ojnWKgT4L2XFqy9i6KF/mX5l6wxDeGWQMRxuiN/6o4fqvcQfbOgnf874kOlhvN6uAI/lf5ml/GnDvvSHNuBrLSzy+gahdOgNuNkqAIenZ12hNcfUV17ohEioaaUeCAV/PzuKFVMpbVeGcYZi2df6Zo81FpwrzoCqSXYcGqe6Q8h7215/J5japf7RfpR7Brs332/a5KUZgh80ass7gMpyXwBRDv5eMgU8IWv9GHVt+mUeTuQSEb+KaKq6C1OKJFpyHyX1QuTMvqSZhabixi89gb8sQ="
+
+script:
+  - pushd test/Tmds.ExecFunction.Tests && dotnet restore && dotnet test && popd
+  - VERSION_SUFFIX="$(date +"%y%m%d")-$TRAVIS_BUILD_NUMBER"
+  - dotnet pack src/Tmds.ExecFunction --configuration Release --version-suffix $VERSION_SUFFIX --output .
+
+after_success:
+  - 'if [ "$TRAVIS_BRANCH" == "master" ] && [ "$TRAVIS_PULL_REQUEST" == "false" ]; then
+  curl -H "X-NuGet-ApiKey: $NUGET_APIKEY" -T src/Tmds.ExecFunction/Tmds.ExecFunction.*.nupkg https://www.myget.org/F/tmds/api/v2/package ;
+     fi'
