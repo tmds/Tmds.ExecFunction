@@ -53,7 +53,7 @@ private FunctionExecutor FunctionExecutor = new FunctionExecutor(
 );
 
 [Fact]
-public void TestArgStringArrayReturnVoid()
+public void Test()
 {
     FunctionExecutor.Run(
         (string[] args) => 
@@ -79,7 +79,7 @@ static int Main(string[] args)
     }
     else
     {
-        ExecFunction.Start(() => System.Console.WriteLine("Hello world!")).WaitForExit();
+        ExecFunction.Run(() => System.Console.WriteLine("Hello world!"));
         return 0;
     }
 }
