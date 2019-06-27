@@ -10,88 +10,86 @@ namespace Tmds.Utils
 {
     public class FunctionExecutor
     {
-        private readonly Action<ProcessStartInfo> _configure;
-        private readonly Action<Process> _onExit;
+        private readonly Action<ExecFunctionOptions> _configure;
 
-        public FunctionExecutor(Action<ProcessStartInfo> configure, Action<Process> onExit = null)
+        public FunctionExecutor(Action<ExecFunctionOptions> configure)
         {
             _configure = configure;
-            _onExit = onExit;
         }
 
-        public void Run(Action action, Action<ProcessStartInfo> configure = null)
-        {
-            using (Process process = ExecFunction.Start(action, CombineConfigures(_configure, configure)))
-            {
-                process.WaitForExit();
-                _onExit?.Invoke(process);
-            }
-        }
+        public Process Start(Action action, Action<ExecFunctionOptions> configure = null)
+            => ExecFunction.Start(action, CombineConfigures(_configure, configure));
 
-        public void Run(Action<string[]> action, string[] args, Action<ProcessStartInfo> configure = null)
-        {
-            using (Process process = ExecFunction.Start(action, args, CombineConfigures(_configure, configure)))
-            {
-                process.WaitForExit();
-                _onExit?.Invoke(process);
-            }
-        }
+        public Process Start(Action<string[]> action, string[] args, Action<ExecFunctionOptions> configure = null)
+            => ExecFunction.Start(action, args, CombineConfigures(_configure, configure));
 
-        public void Run(Func<int> action, Action<ProcessStartInfo> configure = null)
-        {
-            using (Process process = ExecFunction.Start(action, CombineConfigures(_configure, configure)))
-            {
-                process.WaitForExit();
-                _onExit?.Invoke(process);
-            }
-        }
+        public Process Start(Func<int> action, Action<ExecFunctionOptions> configure = null)
+            => ExecFunction.Start(action, CombineConfigures(_configure, configure));
 
-        public void Run(Func<string[], int> action, string[] args, Action<ProcessStartInfo> configure = null)
-        {
-            using (Process process = ExecFunction.Start(action, args, CombineConfigures(_configure, configure)))
-            {
-                process.WaitForExit();
-                _onExit?.Invoke(process);
-            }
-        }
+        public Process Start(Func<string[], int> action, string[] args, Action<ExecFunctionOptions> configure = null)
+            => ExecFunction.Start(action, args, CombineConfigures(_configure, configure));
 
-        public void Run(Func<Task> action, Action<ProcessStartInfo> configure = null)
-        {
-            using (Process process = ExecFunction.Start(action, CombineConfigures(_configure, configure)))
-            {
-                process.WaitForExit();
-                _onExit?.Invoke(process);
-            }
-        }
+        public Process Start(Func<Task> action, Action<ExecFunctionOptions> configure = null)
+            => ExecFunction.Start(action, CombineConfigures(_configure, configure));
 
-        public void Run(Func<string[], Task> action, string[] args, Action<ProcessStartInfo> configure = null)
-        {
-            using (Process process = ExecFunction.Start(action, args, CombineConfigures(_configure, configure)))
-            {
-                process.WaitForExit();
-                _onExit?.Invoke(process);
-            }
-        }
+        public Process Start(Func<string[], Task> action, string[] args, Action<ExecFunctionOptions> configure = null)
+            => ExecFunction.Start(action, args, CombineConfigures(_configure, configure));
 
-        public void Run(Func<Task<int>> action, Action<ProcessStartInfo> configure = null)
-        {
-            using (Process process = ExecFunction.Start(action, CombineConfigures(_configure, configure)))
-            {
-                process.WaitForExit();
-                _onExit?.Invoke(process);
-            }
-        }
+        public Process Start(Func<Task<int>> action, Action<ExecFunctionOptions> configure = null)
+            => ExecFunction.Start(action, CombineConfigures(_configure, configure));
 
-        public void Run(Func<string[], Task<int>> action, string[] args, Action<ProcessStartInfo> configure = null)
-        {
-            using (Process process = ExecFunction.Start(action, args, CombineConfigures(_configure, configure)))
-            {
-                process.WaitForExit();
-                _onExit?.Invoke(process);
-            }
-        }
+        public Process Start(Func<string[], Task<int>> action, string[] args, Action<ExecFunctionOptions> configure = null)
+            => ExecFunction.Start(action, args, CombineConfigures(_configure, configure));
 
-        private static Action<ProcessStartInfo> CombineConfigures(Action<ProcessStartInfo> first, Action<ProcessStartInfo> second)
+        public void Run(Action action, Action<ExecFunctionOptions> configure = null)
+            => ExecFunction.Run(action, CombineConfigures(_configure, configure));
+
+        public void Run(Action<string[]> action, string[] args, Action<ExecFunctionOptions> configure = null)
+            => ExecFunction.Run(action, args, CombineConfigures(_configure, configure));
+
+        public void Run(Func<int> action, Action<ExecFunctionOptions> configure = null)
+            => ExecFunction.Run(action, CombineConfigures(_configure, configure));
+
+        public void Run(Func<string[], int> action, string[] args, Action<ExecFunctionOptions> configure = null)
+            => ExecFunction.Run(action, args, CombineConfigures(_configure, configure));
+
+        public void Run(Func<Task> action, Action<ExecFunctionOptions> configure = null)
+            => ExecFunction.Run(action, CombineConfigures(_configure, configure));
+
+        public void Run(Func<string[], Task> action, string[] args, Action<ExecFunctionOptions> configure = null)
+            => ExecFunction.Run(action, args, CombineConfigures(_configure, configure));
+
+        public void Run(Func<Task<int>> action, Action<ExecFunctionOptions> configure = null)
+            => ExecFunction.Run(action, CombineConfigures(_configure, configure));
+
+        public void Run(Func<string[], Task<int>> action, string[] args, Action<ExecFunctionOptions> configure = null)
+            => ExecFunction.Run(action, args, CombineConfigures(_configure, configure));
+
+        public Task RunAsync(Action action, Action<ExecFunctionOptions> configure = null)
+            => ExecFunction.RunAsync(action, CombineConfigures(_configure, configure));
+
+        public Task RunAsync(Action<string[]> action, string[] args, Action<ExecFunctionOptions> configure = null)
+            => ExecFunction.RunAsync(action, args, CombineConfigures(_configure, configure));
+
+        public Task RunAsync(Func<int> action, Action<ExecFunctionOptions> configure = null)
+            => ExecFunction.RunAsync(action, CombineConfigures(_configure, configure));
+
+        public Task RunAsync(Func<string[], int> action, string[] args, Action<ExecFunctionOptions> configure = null)
+            => ExecFunction.RunAsync(action, args, CombineConfigures(_configure, configure));
+
+        public Task RunAsync(Func<Task> action, Action<ExecFunctionOptions> configure = null)
+            => ExecFunction.RunAsync(action, CombineConfigures(_configure, configure));
+
+        public Task RunAsync(Func<string[], Task> action, string[] args, Action<ExecFunctionOptions> configure = null)
+            => ExecFunction.RunAsync(action, args, CombineConfigures(_configure, configure));
+
+        public Task RunAsync(Func<Task<int>> action, Action<ExecFunctionOptions> configure = null)
+            => ExecFunction.RunAsync(action, CombineConfigures(_configure, configure));
+
+        public Task RunAsync(Func<string[], Task<int>> action, string[] args, Action<ExecFunctionOptions> configure = null)
+            => ExecFunction.RunAsync(action, args, CombineConfigures(_configure, configure));
+
+        private static Action<ExecFunctionOptions> CombineConfigures(Action<ExecFunctionOptions> first, Action<ExecFunctionOptions> second)
         {
             if (first == null)
             {

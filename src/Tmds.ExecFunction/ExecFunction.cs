@@ -14,49 +14,137 @@ using System.Threading.Tasks;
 
 namespace Tmds.Utils
 {
-    public static class ProcessStartInfoExtensions
-    {
-        public static ProcessStartInfo WithRedirectedStdio(this ProcessStartInfo psi)
-        {
-            psi.RedirectStandardError = true;
-            psi.RedirectStandardInput = true;
-            psi.RedirectStandardOutput = true;
-            return psi;
-        }
-    }
-
     public static partial class ExecFunction
     {
-        public static readonly Action<ProcessStartInfo> RedirectStdio = psi => psi.WithRedirectedStdio();
+        public static Process Start(Action action, Action<ExecFunctionOptions> configure = null)
+            => Start(GetMethodInfo(action), Array.Empty<string>(), configure).process;
 
-        public static Process Start(Action action, Action<ProcessStartInfo> configure = null)
-            => Start(GetMethodInfo(action), Array.Empty<string>(), configure);
+        public static Process Start(Action<string[]> action, string[] args, Action<ExecFunctionOptions> configure = null)
+            => Start(GetMethodInfo(action), args ?? throw new ArgumentNullException(nameof(args)), configure).process;
 
-        public static Process Start(Action<string[]> action, string[] args, Action<ProcessStartInfo> configure = null)
-            => Start(GetMethodInfo(action), args ?? throw new ArgumentNullException(nameof(args)), configure);
+        public static Process Start(Func<int> action, Action<ExecFunctionOptions> configure = null)
+            => Start(GetMethodInfo(action), Array.Empty<string>(), configure).process;
 
-        public static Process Start(Func<int> action, Action<ProcessStartInfo> configure = null)
-            => Start(GetMethodInfo(action), Array.Empty<string>(), configure);
+        public static Process Start(Func<string[], int> action, string[] args, Action<ExecFunctionOptions> configure = null)
+            => Start(GetMethodInfo(action), args ?? throw new ArgumentNullException(nameof(args)), configure).process;
 
-        public static Process Start(Func<string[], int> action, string[] args, Action<ProcessStartInfo> configure = null)
-            => Start(GetMethodInfo(action), args ?? throw new ArgumentNullException(nameof(args)), configure);
+        public static Process Start(Func<Task> action, Action<ExecFunctionOptions> configure = null)
+            => Start(GetMethodInfo(action), Array.Empty<string>(), configure).process;
 
-        public static Process Start(Func<Task> action, Action<ProcessStartInfo> configure = null)
-            => Start(GetMethodInfo(action), Array.Empty<string>(), configure);
+        public static Process Start(Func<string[], Task> action, string[] args, Action<ExecFunctionOptions> configure = null)
+            => Start(GetMethodInfo(action), args ?? throw new ArgumentNullException(nameof(args)), configure).process;
 
-        public static Process Start(Func<string[], Task> action, string[] args, Action<ProcessStartInfo> configure = null)
-            => Start(GetMethodInfo(action), args ?? throw new ArgumentNullException(nameof(args)), configure);
+        public static Process Start(Func<Task<int>> action, Action<ExecFunctionOptions> configure = null)
+            => Start(GetMethodInfo(action), Array.Empty<string>(), configure).process;
 
-        public static Process Start(Func<Task<int>> action, Action<ProcessStartInfo> configure = null)
-            => Start(GetMethodInfo(action), Array.Empty<string>(), configure);
+        public static Process Start(Func<string[], Task<int>> action, string[] args, Action<ExecFunctionOptions> configure = null)
+            => Start(GetMethodInfo(action), args ?? throw new ArgumentNullException(nameof(args)), configure).process;
 
-        public static Process Start(Func<string[], Task<int>> action, string[] args, Action<ProcessStartInfo> configure = null)
-            => Start(GetMethodInfo(action), args ?? throw new ArgumentNullException(nameof(args)), configure);
+        public static void Run(Action action, Action<ExecFunctionOptions> configure = null)
+            => Start(GetMethodInfo(action), Array.Empty<string>(), configure, waitForExit: true);
 
-        private static Process Start(MethodInfo method, string[] args, Action<ProcessStartInfo> configure)
-            => Process.Start(CreateProcessStartInfo(method, args, configure));
+        public static void Run(Action<string[]> action, string[] args, Action<ExecFunctionOptions> configure = null)
+            => Start(GetMethodInfo(action), args ?? throw new ArgumentNullException(nameof(args)), configure, waitForExit: true);
 
-        private static ProcessStartInfo CreateProcessStartInfo(MethodInfo method, string[] args, Action<ProcessStartInfo> configure)
+        public static void Run(Func<int> action, Action<ExecFunctionOptions> configure = null)
+            => Start(GetMethodInfo(action), Array.Empty<string>(), configure, waitForExit: true);
+
+        public static void Run(Func<string[], int> action, string[] args, Action<ExecFunctionOptions> configure = null)
+            => Start(GetMethodInfo(action), args ?? throw new ArgumentNullException(nameof(args)), configure, waitForExit: true);
+
+        public static void Run(Func<Task> action, Action<ExecFunctionOptions> configure = null)
+            => Start(GetMethodInfo(action), Array.Empty<string>(), configure, waitForExit: true);
+
+        public static void Run(Func<string[], Task> action, string[] args, Action<ExecFunctionOptions> configure = null)
+            => Start(GetMethodInfo(action), args ?? throw new ArgumentNullException(nameof(args)), configure, waitForExit: true);
+
+        public static void Run(Func<Task<int>> action, Action<ExecFunctionOptions> configure = null)
+            => Start(GetMethodInfo(action), Array.Empty<string>(), configure, waitForExit: true);
+
+        public static void Run(Func<string[], Task<int>> action, string[] args, Action<ExecFunctionOptions> configure = null)
+            => Start(GetMethodInfo(action), args ?? throw new ArgumentNullException(nameof(args)), configure, waitForExit: true);
+
+        public static Task RunAsync(Action action, Action<ExecFunctionOptions> configure = null)
+            => Start(GetMethodInfo(action), Array.Empty<string>(), configure, returnTask: true).exitedTask;
+
+        public static Task RunAsync(Action<string[]> action, string[] args, Action<ExecFunctionOptions> configure = null)
+            => Start(GetMethodInfo(action), args ?? throw new ArgumentNullException(nameof(args)), configure, returnTask: true).exitedTask;
+
+        public static Task RunAsync(Func<int> action, Action<ExecFunctionOptions> configure = null)
+            => Start(GetMethodInfo(action), Array.Empty<string>(), configure, returnTask: true).exitedTask;
+
+        public static Task RunAsync(Func<string[], int> action, string[] args, Action<ExecFunctionOptions> configure = null)
+            => Start(GetMethodInfo(action), args ?? throw new ArgumentNullException(nameof(args)), configure, returnTask: true).exitedTask;
+
+        public static Task RunAsync(Func<Task> action, Action<ExecFunctionOptions> configure = null)
+            => Start(GetMethodInfo(action), Array.Empty<string>(), configure, returnTask: true).exitedTask;
+
+        public static Task RunAsync(Func<string[], Task> action, string[] args, Action<ExecFunctionOptions> configure = null)
+            => Start(GetMethodInfo(action), args ?? throw new ArgumentNullException(nameof(args)), configure, returnTask: true).exitedTask;
+
+        public static Task RunAsync(Func<Task<int>> action, Action<ExecFunctionOptions> configure = null)
+            => Start(GetMethodInfo(action), Array.Empty<string>(), configure, returnTask: true).exitedTask;
+
+        public static Task RunAsync(Func<string[], Task<int>> action, string[] args, Action<ExecFunctionOptions> configure = null)
+            => Start(GetMethodInfo(action), args ?? throw new ArgumentNullException(nameof(args)), configure, returnTask: true).exitedTask;
+
+        private static (Process process, Task exitedTask) Start(MethodInfo method, string[] args, Action<ExecFunctionOptions> configure, bool waitForExit = false, bool returnTask = false)
+        {
+            Process process = null;
+            Task exitedTask = null;
+            try
+            {
+                process = new Process();
+
+                ExecFunctionOptions options = new ExecFunctionOptions(process.StartInfo);
+                ConfigureProcessStartInfoForMethodInvocation(method, args, options.StartInfo);
+                configure?.Invoke(options);
+
+                TaskCompletionSource<bool> tcs = null;
+                if (returnTask == true)
+                {
+                    tcs = new TaskCompletionSource<bool>();
+                }
+
+                if (options.OnExit != null || tcs != null)
+                {
+                    process.EnableRaisingEvents = true;
+                    process.Exited += (_1, _2) =>
+                    {
+                        options.OnExit(process);
+
+                        if (tcs != null)
+                        {
+                            tcs?.SetResult(true);
+                            process.Dispose();
+                        }
+                    };
+                }
+
+                process.Start();
+
+                if (waitForExit)
+                {
+                    process.WaitForExit();
+                }
+
+                return (process, exitedTask);
+            }
+            catch
+            {
+                process?.Dispose();
+                throw;
+            }
+            finally
+            {
+                if (waitForExit)
+                {
+                    process?.Dispose();
+                }
+            }
+        }
+
+        private static void ConfigureProcessStartInfoForMethodInvocation(MethodInfo method, string[] args, ProcessStartInfo psi)
         {
             if (method.ReturnType != typeof(void) &&
                 method.ReturnType != typeof(int) &&
@@ -73,11 +161,6 @@ namespace Tmds.Utils
                 throw new ArgumentException("method has non string[] argument", nameof(method));
             }
 
-            // Start the other process and return a wrapper for it to handle its lifetime and exit checking.
-            ProcessStartInfo psi = new ProcessStartInfo();
-            psi.UseShellExecute = false;
-            configure?.Invoke(psi);
-
             // If we need the host (if it exists), use it, otherwise target the console app directly.
             Type t = method.DeclaringType;
             Assembly a = t.GetTypeInfo().Assembly;
@@ -87,8 +170,6 @@ namespace Tmds.Utils
 
             psi.FileName = HostFilename;
             psi.Arguments = fullArgs;
-
-            return psi;
         }
 
         private static MethodInfo GetMethodInfo(Delegate d)

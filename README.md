@@ -13,21 +13,57 @@ This library supports .NET Core 2.0+ on Windows and Linux.
 
 # Usage
 
-The main method of the library is `ExecFunction.Start`. It accepts a delegate that is the function to execute in the remote process. The function can have the same signature of a .NET `Main`: a `void`/`string[]` argument, and a `void`/`int`/`Task`/`Task<int>` return type.
-
-The method returns the started process as a `System.Diagnostics.Process`.
+The main method of the library is `ExecFunction.Run`. It accepts a delegate that is the function to execute in the remote process. The function can have the same signature of a .NET `Main`: a `void`/`string[]` argument, and a `void`/`int`/`Task`/`Task<int>` return type.
 
 For example:
 ```cs
-using (Process p = ExecFunction.Start(() => Console.WriteLine("Hello from child process!")))
-{
-    p.WaitForExit();
-}
+ExecFunction.Run(() => Console.WriteLine("Hello from child process!"));
 ```
 
 The `ProcessStartInfo` that is used to start the process can be configured, by adding a configuration delegate:
 ```cs
-ExecFunction.Start(..., psi => psi.RedirectStandardOutput = true);
+ExecFunction.Run(..., o => o.StartInfo.RedirectStandardOutput = true);
+```
+
+If you want to re-use the same configuration for multiple invocations you can use the `FunctionExecutor` class.
+
+```cs
+private FunctionExecutor FunctionExecutor = new FunctionExecutor(o.StartInfo.RedirectStandardOutput = true);
+
+// Now call FunctionExecutor.Run(...).
+```
+
+The configuration allows you to add an `OnExit` action. For example, you can use this FunctionExecutor in an xunit project and `Assert` in the child process:
+
+```cs
+private FunctionExecutor FunctionExecutor = new FunctionExecutor(
+    o =>
+    {
+        o.StartInfo.RedirectStandardError = true;
+        o.OnExit = p =>
+        {
+            if (p.ExitCode != 0)
+            {
+                string message = $"Function exit code failed with exit code: {p.ExitCode}" + Environment.NewLine +
+                                  p.StandardError.ReadToEnd();
+                throw new Xunit.Sdk.XunitException(message);
+            }
+        };
+    }
+);
+
+[Fact]
+public void TestArgStringArrayReturnVoid()
+{
+    FunctionExecutor.Run(
+        (string[] args) => 
+        {
+            Assert.Equal("arg1", args[0]);
+            Assert.Equal("arg2", args[1]);
+        },
+        new string[] { "arg1", "arg2" }
+    );
+}
 ```
 
 When `ExecFunction` is used from the `dotnet` host, it will work out-of-the box.
