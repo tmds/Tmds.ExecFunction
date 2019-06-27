@@ -2,6 +2,7 @@ using System;
 using System.Diagnostics;
 using Xunit;
 using Tmds.Utils;
+using System.Threading.Tasks;
 
 namespace Tmds.Tests
 {
@@ -28,6 +29,18 @@ namespace Tmds.Tests
                 },
                 new string[] { "arg1", "arg2" }
             );
+        }
+
+        [Fact]
+        public async Task RunAsync()
+        {
+            int? exitCode = null;
+
+            await FunctionExecutor.RunAsync(
+                () => 42,
+                o => o.OnExit = process => exitCode = process.ExitCode);
+
+            Assert.Equal(42, exitCode);
         }
 
         private FunctionExecutor FunctionExecutor = new FunctionExecutor(

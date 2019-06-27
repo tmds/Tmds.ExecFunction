@@ -91,7 +91,6 @@ namespace Tmds.Utils
         private static (Process process, Task exitedTask) Start(MethodInfo method, string[] args, Action<ExecFunctionOptions> configure, bool waitForExit = false, bool returnTask = false)
         {
             Process process = null;
-            Task exitedTask = null;
             try
             {
                 process = new Process();
@@ -128,7 +127,7 @@ namespace Tmds.Utils
                     process.WaitForExit();
                 }
 
-                return (process, exitedTask);
+                return (process, tcs?.Task);
             }
             catch
             {
