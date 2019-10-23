@@ -58,5 +58,27 @@ namespace Tmds.Tests
                 };
             }
         );
+
+        [Fact]
+        public async Task GatherConsoleOut()
+        {
+            string outText = null;
+            FunctionExecutor FunctionExecutor = new FunctionExecutor(
+                o =>
+                {
+                    o.StartInfo.RedirectStandardOutput= true;
+                    o.OnExit = p =>
+                    {
+                        outText = p.StandardOutput.ReadToEnd();
+                    };
+                }
+            );
+
+            await FunctionExecutor.RunAsync(
+                () => { Console.Write("hello world"); return 0; });
+
+            Assert.Equal("hello world", outText);
+        }
+
     }
 }
