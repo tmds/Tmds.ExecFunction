@@ -201,15 +201,40 @@ namespace Tmds.Utils
         static ExecFunction()
         {
             HostFilename = Process.GetCurrentProcess().MainModule.FileName;
+            string[] appArguments = GetApplicationArguments();
 
-            // application is running as 'dotnet exec'
+            // application is running as 'testhost'
+            if (HostFilename.EndsWith("/testhost") || HostFilename.EndsWith("\\testhost.exe"))
+            {
+                string parentProcessIdRaw = GetApplicationArgument(appArguments, "--parentprocessid");
+                if (parentProcessIdRaw == null)
+                {
+                    // this case could be augmented with searching for a dotnet install somewhere
+                    throw new NotSupportedException("Application is running through testhost, could not get dotnet binary location");
+                }
+
+                int parentProcessId = int.Parse(parentProcessIdRaw);
+
+                Process proc = Process.GetProcessById(parentProcessId);
+
+                if (proc.MainModule.FileName.EndsWith("/dotnet") || proc.MainModule.FileName.EndsWith("\\dotnet.exe"))
+                {
+                    HostFilename = proc.MainModule.FileName;
+                }
+                else
+                {
+                    // this case could be augmented with searching for a dotnet install somewhere
+                    throw new Exception("Can't get dotnet binary location");
+                }
+            }
+
+            // application is running as 'dotnet exec' or 'testhost'
             if (HostFilename.EndsWith("/dotnet") || HostFilename.EndsWith("\\dotnet.exe"))
             {
                 string execFunctionAssembly = typeof(ExecFunction).Assembly.Location;
 
                 string entryAssemblyWithoutExtension = Path.Combine(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location),
                                                                     Path.GetFileNameWithoutExtension(Assembly.GetEntryAssembly().Location));
-                string[] appArguments = GetApplicationArguments();
 
                 string runtimeConfigFile = GetApplicationArgument(appArguments, "--runtimeconfig");
                 if (runtimeConfigFile == null)
@@ -224,7 +249,7 @@ namespace Tmds.Utils
                 }
 
                 HostArguments = PasteArguments.Paste(new string[] { "exec", "--runtimeconfig", runtimeConfigFile, "--depsfile", depsFile, execFunctionAssembly });
-            }
+            } 
             // application is an apphost. Main method must call 'RunFunction.Program.Main' for CommandName.
             else
             {
