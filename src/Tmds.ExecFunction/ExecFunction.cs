@@ -201,40 +201,39 @@ namespace Tmds.Utils
         static ExecFunction()
         {
             HostFilename = Process.GetCurrentProcess().MainModule.FileName;
-            string[] appArguments = GetApplicationArguments();
+            string[] appArguments = null;
 
             // application is running as 'testhost'
+            // try to find parent 'dotnet' host process.
             if (HostFilename.EndsWith("/testhost") || HostFilename.EndsWith("\\testhost.exe"))
             {
+                HostFilename = null;
+
+                appArguments = GetApplicationArguments();
                 string parentProcessIdRaw = GetApplicationArgument(appArguments, "--parentprocessid");
-                if (parentProcessIdRaw == null)
+                if (parentProcessIdRaw != null)
                 {
-                    // this case could be augmented with searching for a dotnet install somewhere
-                    throw new NotSupportedException("Application is running through testhost, could not get dotnet binary location");
-                }
+                    int parentProcessId = int.Parse(parentProcessIdRaw);
 
-                int parentProcessId = int.Parse(parentProcessIdRaw);
-
-                Process proc = Process.GetProcessById(parentProcessId);
-
-                if (proc.MainModule.FileName.EndsWith("/dotnet") || proc.MainModule.FileName.EndsWith("\\dotnet.exe"))
-                {
+                    Process proc = Process.GetProcessById(parentProcessId);
                     HostFilename = proc.MainModule.FileName;
                 }
-                else
+
+                if (HostFilename == null ||
+                   !((HostFilename.EndsWith("/dotnet") || HostFilename.EndsWith("\\dotnet.exe"))))
                 {
-                    // this case could be augmented with searching for a dotnet install somewhere
-                    throw new Exception("Can't get dotnet binary location");
+                    throw new NotSupportedException("Application is running as testhost, unable to determine parent 'dotnet' process.");
                 }
             }
 
-            // application is running as 'dotnet exec' or 'testhost'
+            // application is running as 'dotnet exec'.
             if (HostFilename.EndsWith("/dotnet") || HostFilename.EndsWith("\\dotnet.exe"))
             {
                 string execFunctionAssembly = typeof(ExecFunction).Assembly.Location;
 
                 string entryAssemblyWithoutExtension = Path.Combine(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location),
                                                                     Path.GetFileNameWithoutExtension(Assembly.GetEntryAssembly().Location));
+                appArguments = appArguments ?? GetApplicationArguments();
 
                 string runtimeConfigFile = GetApplicationArgument(appArguments, "--runtimeconfig");
                 if (runtimeConfigFile == null)
@@ -249,7 +248,7 @@ namespace Tmds.Utils
                 }
 
                 HostArguments = PasteArguments.Paste(new string[] { "exec", "--runtimeconfig", runtimeConfigFile, "--depsfile", depsFile, execFunctionAssembly });
-            } 
+            }
             // application is an apphost. Main method must call 'RunFunction.Program.Main' for CommandName.
             else
             {
