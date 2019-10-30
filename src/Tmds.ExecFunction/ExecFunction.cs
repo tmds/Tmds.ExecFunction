@@ -201,15 +201,39 @@ namespace Tmds.Utils
         static ExecFunction()
         {
             HostFilename = Process.GetCurrentProcess().MainModule.FileName;
+            string[] appArguments = null;
 
-            // application is running as 'dotnet exec'
+            // application is running as 'testhost'
+            // try to find parent 'dotnet' host process.
+            if (HostFilename.EndsWith("/testhost") || HostFilename.EndsWith("\\testhost.exe"))
+            {
+                HostFilename = null;
+
+                appArguments = GetApplicationArguments();
+                string parentProcessIdRaw = GetApplicationArgument(appArguments, "--parentprocessid");
+                if (parentProcessIdRaw != null)
+                {
+                    int parentProcessId = int.Parse(parentProcessIdRaw);
+
+                    Process proc = Process.GetProcessById(parentProcessId);
+                    HostFilename = proc.MainModule.FileName;
+                }
+
+                if (HostFilename == null ||
+                   !((HostFilename.EndsWith("/dotnet") || HostFilename.EndsWith("\\dotnet.exe"))))
+                {
+                    throw new NotSupportedException("Application is running as testhost, unable to determine parent 'dotnet' process.");
+                }
+            }
+
+            // application is running as 'dotnet exec'.
             if (HostFilename.EndsWith("/dotnet") || HostFilename.EndsWith("\\dotnet.exe"))
             {
                 string execFunctionAssembly = typeof(ExecFunction).Assembly.Location;
 
                 string entryAssemblyWithoutExtension = Path.Combine(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location),
                                                                     Path.GetFileNameWithoutExtension(Assembly.GetEntryAssembly().Location));
-                string[] appArguments = GetApplicationArguments();
+                appArguments = appArguments ?? GetApplicationArguments();
 
                 string runtimeConfigFile = GetApplicationArgument(appArguments, "--runtimeconfig");
                 if (runtimeConfigFile == null)
