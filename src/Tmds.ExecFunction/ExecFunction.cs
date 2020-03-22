@@ -268,10 +268,93 @@ namespace Tmds.Utils
             return null;
         }
 
+        private static string[] GetOSXCommandLineArguments()
+        {
+            // The following logic is based on https://gist.github.com/nonowarn/770696
+            // Set up the mib array and the query for process maximum args size
+            var mib = new int[3];
+            int mibLength = 2;
+            mib[0] = MACOS_CTL_KERN;
+            mib[1] = MACOS_KERN_ARGMAX;
+
+            int size = IntPtr.Size / 2;
+            int argmax = 0;
+            var argv = new List<string>();
+
+            var mibHandle = GCHandle.Alloc(mib, GCHandleType.Pinned);
+            try
+            {
+                var mibPtr = mibHandle.AddrOfPinnedObject();
+
+                // Get the process args size
+                SysCtl(mibPtr, mibLength, ref argmax, ref size, IntPtr.Zero, 0);
+
+                // Get the PID so we can query this process' args
+                var pid = Process.GetCurrentProcess().Id;
+
+                // Now read the process args into the allocated space
+                IntPtr procargs = Marshal.AllocHGlobal(argmax);
+                try
+                {
+                    mib[0] = MACOS_CTL_KERN;
+                    mib[1] = MACOS_KERN_PROCARGS2;
+                    mib[2] = pid;
+                    mibLength = 3;
+
+                    SysCtl(mibPtr, mibLength, procargs, ref argmax, IntPtr.Zero, 0);
+
+                    // The memory block we're reading is a series of null-terminated strings
+                    // that looks something like this:
+                    //
+                    // | argc      | <int> is always 4 bytes long even on 64bit architectures
+                    // | exec_path | ... \0\0\0\0 * ?
+                    // | argv[0]   | ... \0
+                    // | argv[1]   | ... \0
+                    // | argv[2]   | ... \0
+                    //   ...
+                    // | env[0]    | ... \0  (VALUE = SOMETHING\0)
+
+                    // Read argc
+                    var argc = Marshal.ReadInt32(procargs);
+
+                    // Skip over argc
+                    var argvPtr = IntPtr.Add(procargs, sizeof(int));
+
+                    // Skip over exec_path
+                    var offset = 0;
+                    while (Marshal.ReadByte(argvPtr, offset) != 0) { offset++; }
+                    while (Marshal.ReadByte(argvPtr, offset) == 0) { offset++; }
+                    argvPtr = IntPtr.Add(argvPtr, offset);
+
+                    // Start reading argv
+                    for (var i = 0; i < argc; i++)
+                    {
+                        offset = 0;
+                        // Keep reading bytes until we find a null-terminated string
+                        while (Marshal.ReadByte(argvPtr, offset) != 0) { offset++; }
+                        var arg = Marshal.PtrToStringAnsi(argvPtr, offset);
+                        argv.Add(arg);
+
+                        // Move pointer to the start of the next arg (= currentArg + \0)
+                        argvPtr = IntPtr.Add(argvPtr, offset + sizeof(byte));
+                    }
+                }
+                finally
+                {
+                    Marshal.FreeHGlobal(procargs);
+                }
+            }
+            finally
+            {
+                mibHandle.Free();
+            }
+
+            return argv.ToArray();
+        }
+
         private static string[] GetApplicationArguments()
         {
             // Environment.GetCommandLineArgs doesn't include arguments passed to the runtime.
-
             if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
             {
                 return File.ReadAllText($"/proc/{Process.GetCurrentProcess().Id}/cmdline").Split(new[] { '\0' });
@@ -282,11 +365,33 @@ namespace Tmds.Utils
                 string commandLine = Marshal.PtrToStringAuto(ptr);
                 return CommandLineToArgs(commandLine);
             }
+            else if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
+            {
+                return GetOSXCommandLineArguments();
+            }
             else
             {
                 throw new PlatformNotSupportedException($"{nameof(GetApplicationArguments)} is unsupported on this platform");
             }
         }
+
+        private const int MACOS_CTL_KERN = 1;
+        private const int MACOS_KERN_ARGMAX = 8;
+        private const int MACOS_KERN_PROCARGS2 = 49;
+
+        [DllImport("libc",
+            EntryPoint = "sysctl",
+            CallingConvention = CallingConvention.Cdecl,
+            CharSet = CharSet.Ansi,
+            SetLastError = true)]
+        private static extern int SysCtl(IntPtr mib, int mibLength, ref int oldp, ref int oldlenp, IntPtr newp, int newlenp);
+
+        [DllImport("libc",
+            EntryPoint = "sysctl",
+            CallingConvention = CallingConvention.Cdecl,
+            CharSet = CharSet.Ansi,
+            SetLastError = true)]
+        private static extern int SysCtl(IntPtr mib, int mibLength, IntPtr oldp, ref int oldlenp, IntPtr newp, int newlenp);
 
         [DllImport("kernel32.dll", CharSet = CharSet.Auto)]
         private static extern System.IntPtr GetCommandLine();
