@@ -22,7 +22,7 @@ namespace Tmds.Tests
         public void TestArgStringArrayReturnVoid()
         {
             FunctionExecutor.Run(
-                (string[] args) => 
+                (string[] args) =>
                 {
                     Assert.Equal("arg1", args[0]);
                     Assert.Equal("arg2", args[1]);
