@@ -1,7 +1,13 @@
 language: csharp
 mono: none
-dist: xenial
-dotnet: 2.2
+
+jobs:
+  include:
+    - os: linux
+      dotnet: 3.1
+      dist: xenial
+    - os: osx
+      dotnet: 3.1
 
 env:
   global:
@@ -16,5 +22,5 @@ script:
 
 after_success:
   - 'if [ "$TRAVIS_BRANCH" == "master" ] && [ "$TRAVIS_PULL_REQUEST" == "false" ]; then
-  curl -H "X-NuGet-ApiKey: $NUGET_APIKEY" -T src/Tmds.ExecFunction/Tmds.ExecFunction.*.nupkg https://www.myget.org/F/tmds/api/v2/package ;
+  curl -H "X-NuGet-ApiKey: $NUGET_APIKEY" -T Tmds.ExecFunction.*.nupkg https://www.myget.org/F/tmds/api/v2/package ;
      fi'
