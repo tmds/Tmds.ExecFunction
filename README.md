@@ -9,7 +9,7 @@ The library is based on the corefx RemoteExecutorTestBase class.
 
 # Supported platforms
 
-This library supports .NET Core 2.0+ on Windows and Linux.
+This library supports .NET Core 2.0+ on Windows, Linux, and macOS.
 
 # Usage
 
