@@ -209,7 +209,6 @@ namespace Tmds.Utils
             if (HostFilename.EndsWith("/testhost") || HostFilename.EndsWith("\\testhost.exe"))
             {
                 HostFilename = null;
-
                 appArguments = GetApplicationArguments();
                 string parentProcessIdRaw = GetApplicationArgument(appArguments, "--parentprocessid");
                 if (parentProcessIdRaw != null)
