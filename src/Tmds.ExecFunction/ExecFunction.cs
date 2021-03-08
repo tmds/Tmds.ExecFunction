@@ -201,6 +201,7 @@ namespace Tmds.Utils
         static ExecFunction()
         {
             HostFilename = Process.GetCurrentProcess().MainModule.FileName;
+
             string[] appArguments = null;
 
             // application is running as 'testhost'
@@ -217,6 +218,19 @@ namespace Tmds.Utils
 
                     Process proc = Process.GetProcessById(parentProcessId);
                     HostFilename = proc.MainModule.FileName;
+                }
+
+                if (HostFilename.EndsWith("vstest.console.exe"))
+                {
+                    // Running from Visual Studio,
+                    // doing a best-effort attempt to locate "dotnet.exe" based on the runtime path:
+                    string runtimePath = Path.GetDirectoryName(typeof(string).Assembly.Location);
+
+                    HostFilename = Path.Combine(runtimePath, "..", "..", "..", "dotnet.exe");
+                    if (!File.Exists(HostFilename))
+                    {
+                        HostFilename = null;
+                    }
                 }
 
                 if (HostFilename == null ||
