@@ -16,87 +16,91 @@ namespace Tmds.Utils
 {
     public static partial class ExecFunction
     {
-        public static Process Start(Action action, Action<ExecFunctionOptions> configure = null)
-            => Start(GetMethodInfo(action), Array.Empty<string>(), configure).process;
+        public static Process Start(Action action, Action<ExecFunctionOptions> configure = null, ExecFunctionHostArgs execFunctionHostArgs = null)
+            => Start(GetMethodInfo(action), Array.Empty<string>(), configure, execFunctionHostArgs: execFunctionHostArgs).process;
 
-        public static Process Start(Action<string[]> action, string[] args, Action<ExecFunctionOptions> configure = null)
-            => Start(GetMethodInfo(action), args ?? throw new ArgumentNullException(nameof(args)), configure).process;
+        public static Process Start(Action<string[]> action, string[] args, Action<ExecFunctionOptions> configure = null, ExecFunctionHostArgs execFunctionHostArgs = null)
+            => Start(GetMethodInfo(action), args ?? throw new ArgumentNullException(nameof(args)), configure, execFunctionHostArgs: execFunctionHostArgs).process;
 
-        public static Process Start(Func<int> action, Action<ExecFunctionOptions> configure = null)
-            => Start(GetMethodInfo(action), Array.Empty<string>(), configure).process;
+        public static Process Start(Func<int> action, Action<ExecFunctionOptions> configure = null, ExecFunctionHostArgs execFunctionHostArgs = null)
+            => Start(GetMethodInfo(action), Array.Empty<string>(), configure, execFunctionHostArgs: execFunctionHostArgs).process;
 
-        public static Process Start(Func<string[], int> action, string[] args, Action<ExecFunctionOptions> configure = null)
-            => Start(GetMethodInfo(action), args ?? throw new ArgumentNullException(nameof(args)), configure).process;
+        public static Process Start(Func<string[], int> action, string[] args, Action<ExecFunctionOptions> configure = null, ExecFunctionHostArgs execFunctionHostArgs = null)
+            => Start(GetMethodInfo(action), args ?? throw new ArgumentNullException(nameof(args)), configure, execFunctionHostArgs: execFunctionHostArgs).process;
 
-        public static Process Start(Func<Task> action, Action<ExecFunctionOptions> configure = null)
-            => Start(GetMethodInfo(action), Array.Empty<string>(), configure).process;
+        public static Process Start(Func<Task> action, Action<ExecFunctionOptions> configure = null, ExecFunctionHostArgs execFunctionHostArgs = null)
+            => Start(GetMethodInfo(action), Array.Empty<string>(), configure, execFunctionHostArgs: execFunctionHostArgs).process;
 
-        public static Process Start(Func<string[], Task> action, string[] args, Action<ExecFunctionOptions> configure = null)
-            => Start(GetMethodInfo(action), args ?? throw new ArgumentNullException(nameof(args)), configure).process;
+        public static Process Start(Func<string[], Task> action, string[] args, Action<ExecFunctionOptions> configure = null, ExecFunctionHostArgs execFunctionHostArgs = null)
+            => Start(GetMethodInfo(action), args ?? throw new ArgumentNullException(nameof(args)), configure, execFunctionHostArgs: execFunctionHostArgs).process;
 
-        public static Process Start(Func<Task<int>> action, Action<ExecFunctionOptions> configure = null)
-            => Start(GetMethodInfo(action), Array.Empty<string>(), configure).process;
+        public static Process Start(Func<Task<int>> action, Action<ExecFunctionOptions> configure = null, ExecFunctionHostArgs execFunctionHostArgs = null)
+            => Start(GetMethodInfo(action), Array.Empty<string>(), configure, execFunctionHostArgs: execFunctionHostArgs).process;
 
-        public static Process Start(Func<string[], Task<int>> action, string[] args, Action<ExecFunctionOptions> configure = null)
-            => Start(GetMethodInfo(action), args ?? throw new ArgumentNullException(nameof(args)), configure).process;
+        public static Process Start(Func<string[], Task<int>> action, string[] args, Action<ExecFunctionOptions> configure = null, ExecFunctionHostArgs execFunctionHostArgs = null)
+            => Start(GetMethodInfo(action), args ?? throw new ArgumentNullException(nameof(args)), configure, execFunctionHostArgs: execFunctionHostArgs).process;
 
-        public static void Run(Action action, Action<ExecFunctionOptions> configure = null)
-            => Start(GetMethodInfo(action), Array.Empty<string>(), configure, waitForExit: true);
+        public static void Run(Action action, Action<ExecFunctionOptions> configure = null, ExecFunctionHostArgs execFunctionHostArgs = null)
+            => Start(GetMethodInfo(action), Array.Empty<string>(), configure, waitForExit: true, execFunctionHostArgs: execFunctionHostArgs);
 
-        public static void Run(Action<string[]> action, string[] args, Action<ExecFunctionOptions> configure = null)
-            => Start(GetMethodInfo(action), args ?? throw new ArgumentNullException(nameof(args)), configure, waitForExit: true);
+        public static void Run(Action<string[]> action, string[] args, Action<ExecFunctionOptions> configure = null, ExecFunctionHostArgs execFunctionHostArgs = null)
+            => Start(GetMethodInfo(action), args ?? throw new ArgumentNullException(nameof(args)), configure, waitForExit: true, execFunctionHostArgs: execFunctionHostArgs);
 
-        public static void Run(Func<int> action, Action<ExecFunctionOptions> configure = null)
-            => Start(GetMethodInfo(action), Array.Empty<string>(), configure, waitForExit: true);
+        public static void Run(Func<int> action, Action<ExecFunctionOptions> configure = null, ExecFunctionHostArgs execFunctionHostArgs = null)
+            => Start(GetMethodInfo(action), Array.Empty<string>(), configure, waitForExit: true, execFunctionHostArgs: execFunctionHostArgs);
 
-        public static void Run(Func<string[], int> action, string[] args, Action<ExecFunctionOptions> configure = null)
-            => Start(GetMethodInfo(action), args ?? throw new ArgumentNullException(nameof(args)), configure, waitForExit: true);
+        public static void Run(Func<string[], int> action, string[] args, Action<ExecFunctionOptions> configure = null, ExecFunctionHostArgs execFunctionHostArgs = null)
+            => Start(GetMethodInfo(action), args ?? throw new ArgumentNullException(nameof(args)), configure, waitForExit: true, execFunctionHostArgs: execFunctionHostArgs);
 
-        public static void Run(Func<Task> action, Action<ExecFunctionOptions> configure = null)
-            => Start(GetMethodInfo(action), Array.Empty<string>(), configure, waitForExit: true);
+        public static void Run(Func<Task> action, Action<ExecFunctionOptions> configure = null, ExecFunctionHostArgs execFunctionHostArgs = null)
+            => Start(GetMethodInfo(action), Array.Empty<string>(), configure, waitForExit: true, execFunctionHostArgs: execFunctionHostArgs);
 
-        public static void Run(Func<string[], Task> action, string[] args, Action<ExecFunctionOptions> configure = null)
-            => Start(GetMethodInfo(action), args ?? throw new ArgumentNullException(nameof(args)), configure, waitForExit: true);
+        public static void Run(Func<string[], Task> action, string[] args, Action<ExecFunctionOptions> configure = null, ExecFunctionHostArgs execFunctionHostArgs = null)
+            => Start(GetMethodInfo(action), args ?? throw new ArgumentNullException(nameof(args)), configure, waitForExit: true, execFunctionHostArgs: execFunctionHostArgs);
 
-        public static void Run(Func<Task<int>> action, Action<ExecFunctionOptions> configure = null)
-            => Start(GetMethodInfo(action), Array.Empty<string>(), configure, waitForExit: true);
+        public static void Run(Func<Task<int>> action, Action<ExecFunctionOptions> configure = null, ExecFunctionHostArgs execFunctionHostArgs = null)
+            => Start(GetMethodInfo(action), Array.Empty<string>(), configure, waitForExit: true, execFunctionHostArgs: execFunctionHostArgs);
 
-        public static void Run(Func<string[], Task<int>> action, string[] args, Action<ExecFunctionOptions> configure = null)
-            => Start(GetMethodInfo(action), args ?? throw new ArgumentNullException(nameof(args)), configure, waitForExit: true);
+        public static void Run(Func<string[], Task<int>> action, string[] args, Action<ExecFunctionOptions> configure = null, ExecFunctionHostArgs execFunctionHostArgs = null)
+            => Start(GetMethodInfo(action), args ?? throw new ArgumentNullException(nameof(args)), configure, waitForExit: true, execFunctionHostArgs: execFunctionHostArgs);
 
-        public static Task RunAsync(Action action, Action<ExecFunctionOptions> configure = null)
-            => Start(GetMethodInfo(action), Array.Empty<string>(), configure, returnTask: true).exitedTask;
+        public static Task RunAsync(Action action, Action<ExecFunctionOptions> configure = null, ExecFunctionHostArgs execFunctionHostArgs = null)
+            => Start(GetMethodInfo(action), Array.Empty<string>(), configure, returnTask: true, execFunctionHostArgs: execFunctionHostArgs).exitedTask;
 
-        public static Task RunAsync(Action<string[]> action, string[] args, Action<ExecFunctionOptions> configure = null)
-            => Start(GetMethodInfo(action), args ?? throw new ArgumentNullException(nameof(args)), configure, returnTask: true).exitedTask;
+        public static Task RunAsync(Action<string[]> action, string[] args, Action<ExecFunctionOptions> configure = null, ExecFunctionHostArgs execFunctionHostArgs = null)
+            => Start(GetMethodInfo(action), args ?? throw new ArgumentNullException(nameof(args)), configure, returnTask: true, execFunctionHostArgs: execFunctionHostArgs).exitedTask;
 
-        public static Task RunAsync(Func<int> action, Action<ExecFunctionOptions> configure = null)
-            => Start(GetMethodInfo(action), Array.Empty<string>(), configure, returnTask: true).exitedTask;
+        public static Task RunAsync(Func<int> action, Action<ExecFunctionOptions> configure = null, ExecFunctionHostArgs execFunctionHostArgs = null)
+            => Start(GetMethodInfo(action), Array.Empty<string>(), configure, returnTask: true, execFunctionHostArgs: execFunctionHostArgs).exitedTask;
 
-        public static Task RunAsync(Func<string[], int> action, string[] args, Action<ExecFunctionOptions> configure = null)
-            => Start(GetMethodInfo(action), args ?? throw new ArgumentNullException(nameof(args)), configure, returnTask: true).exitedTask;
+        public static Task RunAsync(Func<string[], int> action, string[] args, Action<ExecFunctionOptions> configure = null, ExecFunctionHostArgs execFunctionHostArgs = null)
+            => Start(GetMethodInfo(action), args ?? throw new ArgumentNullException(nameof(args)), configure, returnTask: true, execFunctionHostArgs: execFunctionHostArgs).exitedTask;
 
-        public static Task RunAsync(Func<Task> action, Action<ExecFunctionOptions> configure = null)
-            => Start(GetMethodInfo(action), Array.Empty<string>(), configure, returnTask: true).exitedTask;
+        public static Task RunAsync(Func<Task> action, Action<ExecFunctionOptions> configure = null, ExecFunctionHostArgs execFunctionHostArgs = null)
+            => Start(GetMethodInfo(action), Array.Empty<string>(), configure, returnTask: true, execFunctionHostArgs: execFunctionHostArgs).exitedTask;
 
-        public static Task RunAsync(Func<string[], Task> action, string[] args, Action<ExecFunctionOptions> configure = null)
-            => Start(GetMethodInfo(action), args ?? throw new ArgumentNullException(nameof(args)), configure, returnTask: true).exitedTask;
+        public static Task RunAsync(Func<string[], Task> action, string[] args, Action<ExecFunctionOptions> configure = null, ExecFunctionHostArgs execFunctionHostArgs = null)
+            => Start(GetMethodInfo(action), args ?? throw new ArgumentNullException(nameof(args)), configure, returnTask: true, execFunctionHostArgs: execFunctionHostArgs).exitedTask;
 
-        public static Task RunAsync(Func<Task<int>> action, Action<ExecFunctionOptions> configure = null)
-            => Start(GetMethodInfo(action), Array.Empty<string>(), configure, returnTask: true).exitedTask;
+        public static Task RunAsync(Func<Task<int>> action, Action<ExecFunctionOptions> configure = null, ExecFunctionHostArgs execFunctionHostArgs = null)
+            => Start(GetMethodInfo(action), Array.Empty<string>(), configure, returnTask: true, execFunctionHostArgs: execFunctionHostArgs).exitedTask;
 
-        public static Task RunAsync(Func<string[], Task<int>> action, string[] args, Action<ExecFunctionOptions> configure = null)
-            => Start(GetMethodInfo(action), args ?? throw new ArgumentNullException(nameof(args)), configure, returnTask: true).exitedTask;
+        public static Task RunAsync(Func<string[], Task<int>> action, string[] args, Action<ExecFunctionOptions> configure = null, ExecFunctionHostArgs execFunctionHostArgs = null)
+            => Start(GetMethodInfo(action), args ?? throw new ArgumentNullException(nameof(args)), configure, returnTask: true, execFunctionHostArgs: execFunctionHostArgs).exitedTask;
 
-        private static (Process process, Task exitedTask) Start(MethodInfo method, string[] args, Action<ExecFunctionOptions> configure, bool waitForExit = false, bool returnTask = false)
+        private static (Process process, Task exitedTask) Start(MethodInfo method, string[] args, Action<ExecFunctionOptions> configure, ExecFunctionHostArgs execFunctionHostArgs = null, bool waitForExit = false, bool returnTask = false)
         {
             Process process = null;
             try
             {
                 process = new Process();
 
+                if(execFunctionHostArgs == null) { 
+                    execFunctionHostArgs = _execFunctiohHostArgsDefault.Value;
+                }
+
                 ExecFunctionOptions options = new ExecFunctionOptions(process.StartInfo);
-                ConfigureProcessStartInfoForMethodInvocation(method, args, options.StartInfo);
+                ConfigureProcessStartInfoForMethodInvocation(method, args, options.StartInfo, execFunctionHostArgs);
                 configure?.Invoke(options);
 
                 TaskCompletionSource<bool> tcs = null;
@@ -143,7 +147,7 @@ namespace Tmds.Utils
             }
         }
 
-        private static void ConfigureProcessStartInfoForMethodInvocation(MethodInfo method, string[] args, ProcessStartInfo psi)
+        private static void ConfigureProcessStartInfoForMethodInvocation(MethodInfo method, string[] args, ProcessStartInfo psi, ExecFunctionHostArgs execFunctionHostArgs)
         {
             if (method.ReturnType != typeof(void) &&
                 method.ReturnType != typeof(int) &&
@@ -165,9 +169,9 @@ namespace Tmds.Utils
             Assembly a = t.GetTypeInfo().Assembly;
             string programArgs = PasteArguments.Paste(new string[] { a.FullName, t.FullName, method.Name });
             string functionArgs = PasteArguments.Paste(args);
-            string fullArgs = HostArguments + " " + " " + programArgs + " " + functionArgs;
+            string fullArgs = execFunctionHostArgs.HostArguments + " " + " " + programArgs + " " + functionArgs;
 
-            psi.FileName = HostFilename;
+            psi.FileName = execFunctionHostArgs.HostFilename;
             psi.Arguments = fullArgs;
         }
 
@@ -198,62 +202,76 @@ namespace Tmds.Utils
             return d.GetMethodInfo();
         }
 
-        static ExecFunction()
+
+        private static Lazy<ExecFunctionHostArgs> _execFunctiohHostArgsDefault = 
+            new Lazy<ExecFunctionHostArgs>(() => new ExecFunctionHostArgs(typeof(ExecFunction).Assembly.Location));
+
+        public class ExecFunctionHostArgs
         {
-            HostFilename = Process.GetCurrentProcess().MainModule.FileName;
-            string[] appArguments = null;
-
-            // application is running as 'testhost'
-            // try to find parent 'dotnet' host process.
-            if (HostFilename.EndsWith("/testhost") || HostFilename.EndsWith("\\testhost.exe"))
+            public ExecFunctionHostArgs(string execFunctionAssembly)
             {
-                HostFilename = null;
+                HostFilename = Process.GetCurrentProcess().MainModule.FileName;
+                string[] appArguments = null;
 
-                appArguments = GetApplicationArguments();
-                string parentProcessIdRaw = GetApplicationArgument(appArguments, "--parentprocessid");
-                if (parentProcessIdRaw != null)
+                // application is running as 'testhost'
+                // try to find parent 'dotnet' host process.
+                if (HostFilename.EndsWith("/testhost") || HostFilename.EndsWith("\\testhost.exe"))
                 {
-                    int parentProcessId = int.Parse(parentProcessIdRaw);
+                    HostFilename = null;
 
-                    Process proc = Process.GetProcessById(parentProcessId);
-                    HostFilename = proc.MainModule.FileName;
+                    appArguments = GetApplicationArguments();
+                    string parentProcessIdRaw = GetApplicationArgument(appArguments, "--parentprocessid");
+                    if (parentProcessIdRaw != null)
+                    {
+                        int parentProcessId = int.Parse(parentProcessIdRaw);
+
+                        Process proc = Process.GetProcessById(parentProcessId);
+                        HostFilename = proc.MainModule.FileName;
+                    }
+
+                    if (HostFilename == null ||
+                       !((HostFilename.EndsWith("/dotnet") || HostFilename.EndsWith("\\dotnet.exe"))))
+                    {
+                        throw new NotSupportedException("Application is running as testhost, unable to determine parent 'dotnet' process.");
+                    }
                 }
 
-                if (HostFilename == null ||
-                   !((HostFilename.EndsWith("/dotnet") || HostFilename.EndsWith("\\dotnet.exe"))))
+                // application is running as 'dotnet exec'.
+                if (HostFilename.EndsWith("/dotnet") || HostFilename.EndsWith("\\dotnet.exe"))
                 {
-                    throw new NotSupportedException("Application is running as testhost, unable to determine parent 'dotnet' process.");
+                    string entryAssemblyWithoutExtension = Path.Combine(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location),
+                                                                        Path.GetFileNameWithoutExtension(Assembly.GetEntryAssembly().Location));
+                    appArguments = appArguments ?? GetApplicationArguments();
+
+                    string runtimeConfigFile = GetApplicationArgument(appArguments, "--runtimeconfig");
+                    if (runtimeConfigFile == null)
+                    {
+                        runtimeConfigFile = entryAssemblyWithoutExtension + ".runtimeconfig.json";
+                    }
+
+                    string depsFile = GetApplicationArgument(appArguments, "--depsfile");
+                    if (depsFile == null)
+                    {
+                        depsFile = entryAssemblyWithoutExtension + ".deps.json";
+                    }
+
+                    HostArguments = PasteArguments.Paste(new string[] { "exec", "--runtimeconfig", runtimeConfigFile, "--depsfile", depsFile, execFunctionAssembly });
+                }
+                // application is an apphost. Main method must call 'RunFunction.Program.Main' for CommandName.
+                else
+                {
+                    HostArguments = CommandName;
                 }
             }
 
-            // application is running as 'dotnet exec'.
-            if (HostFilename.EndsWith("/dotnet") || HostFilename.EndsWith("\\dotnet.exe"))
+            public ExecFunctionHostArgs(string HostFilename, string HostArguments)
             {
-                string execFunctionAssembly = typeof(ExecFunction).Assembly.Location;
-
-                string entryAssemblyWithoutExtension = Path.Combine(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location),
-                                                                    Path.GetFileNameWithoutExtension(Assembly.GetEntryAssembly().Location));
-                appArguments = appArguments ?? GetApplicationArguments();
-
-                string runtimeConfigFile = GetApplicationArgument(appArguments, "--runtimeconfig");
-                if (runtimeConfigFile == null)
-                {
-                    runtimeConfigFile = entryAssemblyWithoutExtension + ".runtimeconfig.json";
-                }
-
-                string depsFile = GetApplicationArgument(appArguments, "--depsfile");
-                if (depsFile == null)
-                {
-                    depsFile = entryAssemblyWithoutExtension + ".deps.json";
-                }
-
-                HostArguments = PasteArguments.Paste(new string[] { "exec", "--runtimeconfig", runtimeConfigFile, "--depsfile", depsFile, execFunctionAssembly });
+                this.HostFilename = HostFilename;
+                this.HostArguments = HostArguments;
             }
-            // application is an apphost. Main method must call 'RunFunction.Program.Main' for CommandName.
-            else
-            {
-                HostArguments = CommandName;
-            }
+
+            public readonly string HostFilename;
+            public readonly string HostArguments;
         }
 
         private static string GetApplicationArgument(string[] arguments, string name)
@@ -422,7 +440,5 @@ namespace Tmds.Utils
             }
         }
 
-        private static readonly string HostFilename;
-        private static readonly string HostArguments;
     }
 }
