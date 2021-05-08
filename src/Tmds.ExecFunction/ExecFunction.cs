@@ -100,7 +100,8 @@ namespace Tmds.Utils
                 }
 
                 ExecFunctionOptions options = new ExecFunctionOptions(process.StartInfo);
-                ConfigureProcessStartInfoForMethodInvocation(method, args, options.StartInfo, execFunctionHostArgs);
+                var debuggerEnabled = System.Diagnostics.Debugger.IsAttached && Debugger.DebuggingSupported;
+                ConfigureProcessStartInfoForMethodInvocation(method, args, options.StartInfo, execFunctionHostArgs, debuggerEnabled);
                 configure?.Invoke(options);
 
                 TaskCompletionSource<bool> tcs = null;
@@ -126,6 +127,18 @@ namespace Tmds.Utils
 
                 process.Start();
 
+                if (debuggerEnabled)
+                {
+                    if (!Debugger.TryToAttachDebugger(process.Id))
+                    {
+                        debuggerEnabled = false;
+                    }
+
+                    //signal to the child process to continue now that the debugger is attached
+                    process.StandardInput.WriteLine();
+                }
+
+
                 if (waitForExit)
                 {
                     process.WaitForExit();
@@ -147,7 +160,7 @@ namespace Tmds.Utils
             }
         }
 
-        private static void ConfigureProcessStartInfoForMethodInvocation(MethodInfo method, string[] args, ProcessStartInfo psi, ExecFunctionHostArgs execFunctionHostArgs)
+        private static void ConfigureProcessStartInfoForMethodInvocation(MethodInfo method, string[] args, ProcessStartInfo psi, ExecFunctionHostArgs execFunctionHostArgs, bool debuggerEnabled)
         {
             if (method.ReturnType != typeof(void) &&
                 method.ReturnType != typeof(int) &&
@@ -167,12 +180,16 @@ namespace Tmds.Utils
             // If we need the host (if it exists), use it, otherwise target the console app directly.
             Type t = method.DeclaringType;
             Assembly a = t.GetTypeInfo().Assembly;
-            string programArgs = PasteArguments.Paste(new string[] { a.FullName, t.FullName, method.Name });
+            string programArgs = PasteArguments.Paste(new string[] { a.FullName, t.FullName, method.Name, debuggerEnabled.ToString() });
             string functionArgs = PasteArguments.Paste(args);
             string fullArgs = execFunctionHostArgs.HostArguments + " " + " " + programArgs + " " + functionArgs;
 
             psi.FileName = execFunctionHostArgs.HostFilename;
             psi.Arguments = fullArgs;
+            if(debuggerEnabled)
+            {
+                psi.RedirectStandardInput = true;
+            }
         }
 
         private static MethodInfo GetMethodInfo(Delegate d)
