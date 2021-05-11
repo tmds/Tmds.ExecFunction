@@ -1,0 +1,8 @@
+<Project>
+  <ItemGroup>
+    <VsDebugger Include="$(MSBuildThisFileDirectory)\..\contentFiles\VsDebugger\*.*" />
+  </ItemGroup>
+  <Target Name="CopyVsDebugger" BeforeTargets="Build">
+    <Copy SourceFiles="@(VsDebugger)" DestinationFolder="$(TargetDir)\VsDebugger" />
+  </Target>
+</Project>

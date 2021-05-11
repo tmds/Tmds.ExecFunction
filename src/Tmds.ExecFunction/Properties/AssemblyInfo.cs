@@ -1,3 +1,3 @@
 using System.Reflection;
 
-[assembly: AssemblyKeyFile("Tmds.ExecFunction.snk")]
+//[assembly: AssemblyKeyFile("Tmds.ExecFunction.snk")]

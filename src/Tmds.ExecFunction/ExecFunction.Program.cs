@@ -49,7 +49,16 @@ namespace Tmds.Utils
                 string assemblyName = args[argIdx++];
                 string typeName = args[argIdx++];
                 string methodName = args[argIdx++];
-                string[] additionalArgs = args.SubArray(3);
+                bool debuggerEnabled = Boolean.Parse(args[argIdx++]);
+                string[] additionalArgs = args.SubArray(4);
+
+                if(debuggerEnabled)
+                {
+                    // wait for signal that debugger is attached
+
+                    Console.WriteLine("waiting for debugger");
+                    Console.ReadLine();
+                }
 
                 // Load the specified assembly, type, and method, then invoke the method.
                 // The program's exit code is the return value of the invoked method.
