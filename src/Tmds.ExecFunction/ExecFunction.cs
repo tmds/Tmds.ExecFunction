@@ -164,8 +164,8 @@ namespace Tmds.Utils
             Type t = method.DeclaringType;
             Assembly a = t.GetTypeInfo().Assembly;
 
-            var enableDebuggerAttach = Debugger.IsAttached && Environment.OSVersion.Platform == PlatformID.Win32NT;
-            var pid = Process.GetCurrentProcess().Id;
+            bool enableDebuggerAttach = Debugger.IsAttached && Environment.OSVersion.Platform == PlatformID.Win32NT;
+            int pid = Process.GetCurrentProcess().Id;
 
             string programArgs = PasteArguments.Paste(new string[] { a.FullName, t.FullName, method.Name, enableDebuggerAttach.ToString(System.Globalization.CultureInfo.InvariantCulture), pid.ToString(System.Globalization.CultureInfo.InvariantCulture) });
             string functionArgs = PasteArguments.Paste(args);

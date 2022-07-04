@@ -116,7 +116,7 @@ namespace System
                 throw new ArgumentOutOfRangeException(nameof(targetPid));
             }
 
-            var dteInstances = GetInstances();
+            IEnumerable<DTE> dteInstances = GetInstances();
 
             DTE dte = null;
 

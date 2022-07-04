@@ -16,17 +16,17 @@ namespace Tmds.Utils
             {
                 return;
             }
-            var dllPath = Path.Combine(Environment.CurrentDirectory, VsDebuggerLibraryFileName);
+            string dllPath = Path.Combine(Environment.CurrentDirectory, VsDebuggerLibraryFileName);
 
             if (!File.Exists(dllPath))
             {
                 return;
             }
 
-            var assembly = Assembly.LoadFile(dllPath);
+            Assembly assembly = Assembly.LoadFile(dllPath);
 
-            var attachMethod = assembly.GetType("System.DebuggerAttachHelper", false, true)
-                                       ?.GetMethod("AttachTo", BindingFlags.Public | BindingFlags.Static);
+            MethodInfo attachMethod = assembly.GetType("System.DebuggerAttachHelper", false, true)
+                                              ?.GetMethod("AttachTo", BindingFlags.Public | BindingFlags.Static);
 
             attachMethod?.Invoke(null, new object[] { targetProcessId });
         }

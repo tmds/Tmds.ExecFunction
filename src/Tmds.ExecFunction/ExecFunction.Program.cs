@@ -55,7 +55,7 @@ namespace Tmds.Utils
 
                 if (enableDebuggerAttach)
                 {
-                    var parentProcessId = int.Parse(parentProcessIdStr);
+                    int parentProcessId = int.Parse(parentProcessIdStr);
                     DebuggerAttacher.TryAttach(parentProcessId);
                 }
 
