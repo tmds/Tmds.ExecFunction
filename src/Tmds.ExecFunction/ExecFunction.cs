@@ -163,7 +163,11 @@ namespace Tmds.Utils
             // If we need the host (if it exists), use it, otherwise target the console app directly.
             Type t = method.DeclaringType;
             Assembly a = t.GetTypeInfo().Assembly;
-            string programArgs = PasteArguments.Paste(new string[] { a.FullName, t.FullName, method.Name });
+
+            bool enableDebuggerAttach = Debugger.IsAttached && Environment.OSVersion.Platform == PlatformID.Win32NT;
+            int pid = Process.GetCurrentProcess().Id;
+
+            string programArgs = PasteArguments.Paste(new string[] { a.FullName, t.FullName, method.Name, enableDebuggerAttach.ToString(System.Globalization.CultureInfo.InvariantCulture), pid.ToString(System.Globalization.CultureInfo.InvariantCulture) });
             string functionArgs = PasteArguments.Paste(args);
             string fullArgs = HostArguments + " " + " " + programArgs + " " + functionArgs;
 

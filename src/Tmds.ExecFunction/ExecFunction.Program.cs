@@ -50,6 +50,14 @@ namespace Tmds.Utils
                 string typeName = args[argIdx++];
                 string methodName = args[argIdx++];
                 string[] additionalArgs = args.SubArray(3);
+                bool enableDebuggerAttach = bool.Parse(args[argIdx++]);
+                string parentProcessIdStr = args[argIdx++];
+
+                if (enableDebuggerAttach)
+                {
+                    int parentProcessId = int.Parse(parentProcessIdStr);
+                    DebuggerAttacher.TryAttach(parentProcessId);
+                }
 
                 // Load the specified assembly, type, and method, then invoke the method.
                 // The program's exit code is the return value of the invoked method.

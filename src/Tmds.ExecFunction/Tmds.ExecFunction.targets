@@ -1,0 +1,9 @@
+﻿<Project>
+  <ItemGroup Condition="'$(Configuration)' == 'Debug'">
+    <PackageReference Include="EnvDTE" Version="16.7.30328.74" />
+    <VsDebuggerFile Include="$(MSBuildThisFileDirectory)\..\tools\any\vsdebugger\**\*" />
+  </ItemGroup>
+  <Target Name="CopyVsDebuggerFileOnBuild" Condition="'$(Configuration)' == 'Debug'" BeforeTargets="Build">
+    <Copy SourceFiles="@(VsDebuggerFile)" DestinationFolder="$(TargetDir)\" />
+  </Target>
+</Project>
