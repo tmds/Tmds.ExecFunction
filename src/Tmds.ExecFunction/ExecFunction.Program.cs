@@ -49,9 +49,9 @@ namespace Tmds.Utils
                 string assemblyName = args[argIdx++];
                 string typeName = args[argIdx++];
                 string methodName = args[argIdx++];
-                string[] additionalArgs = args.SubArray(3);
                 bool enableDebuggerAttach = bool.Parse(args[argIdx++]);
                 string parentProcessIdStr = args[argIdx++];
+                string[] additionalArgs = args.SubArray(argIdx);
 
                 if (enableDebuggerAttach)
                 {
