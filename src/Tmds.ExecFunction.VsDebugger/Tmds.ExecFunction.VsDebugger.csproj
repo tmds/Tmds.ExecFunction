@@ -5,6 +5,8 @@
     <TargetFramework>netstandard2.0</TargetFramework>
 
     <IsPackable>false</IsPackable>
+
+    <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
   </PropertyGroup>
 
   <ItemGroup>

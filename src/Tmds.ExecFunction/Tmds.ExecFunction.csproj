@@ -24,7 +24,7 @@
 
     <ProjectReference Include="..\Tmds.ExecFunction.VsDebugger\Tmds.ExecFunction.VsDebugger.csproj" PrivateAssets="All" />
 
-    <Content Include="..\Tmds.ExecFunction.VsDebugger\bin\$(Configuration)\$(TargetFramework)\Tmds.ExecFunction.VsDebugger.dll" Link="tools/vsdebugger/Tmds.ExecFunction.VsDebugger.dll" PackagePath="tools/any/vsdebugger/Tmds.ExecFunction.VsDebugger.dll" />
+    <Content Include="..\Tmds.ExecFunction.VsDebugger\bin\$(Configuration)\$(TargetFramework)\*.dll" Link="tools/vsdebugger/%(RecursiveDir)%(FileName)%(Extension)" PackagePath="tools/any/vsdebugger/%(RecursiveDir)%(FileName)%(Extension)" />
   </ItemGroup>
 
 </Project>
