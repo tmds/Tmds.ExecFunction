@@ -49,6 +49,15 @@ namespace Tmds.Tests
             };
         }
 
+        [Fact]
+        public void GetProcessStartInfo()
+        {
+            ProcessStartInfo psi = ExecFunction.GetProcessStartInfo(() => 42);
+            Process process = Process.Start(psi);
+            process.WaitForExit();
+            Assert.Equal(42, process.ExitCode);
+        }
+
         [Theory]
         [InlineData(true)]
         [InlineData(false)]
