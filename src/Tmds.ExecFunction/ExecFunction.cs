@@ -296,7 +296,7 @@ namespace Tmds.Utils
         {
             for (int i = 0; i < arguments.Length - 1; i++)
             {
-                if (arguments[i] == name)
+                if (string.Equals(arguments[i], name, StringComparison.OrdinalIgnoreCase))
                 {
                     return arguments[i + 1];
                 }
