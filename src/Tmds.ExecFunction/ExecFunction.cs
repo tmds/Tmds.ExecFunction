@@ -88,6 +88,37 @@ namespace Tmds.Utils
         public static Task RunAsync(Func<string[], Task<int>> action, string[] args, Action<ExecFunctionOptions> configure = null)
             => Start(GetMethodInfo(action), args ?? throw new ArgumentNullException(nameof(args)), configure, returnTask: true).exitedTask;
 
+        public static ProcessStartInfo GetProcessStartInfo(Action action)
+            => GetProcessStartInfo(GetMethodInfo(action), Array.Empty<string>());
+
+        public static ProcessStartInfo GetProcessStartInfo(Action<string[]> action, string[] args)
+            => GetProcessStartInfo(GetMethodInfo(action), args ?? throw new ArgumentNullException(nameof(args)));
+
+        public static ProcessStartInfo GetProcessStartInfo(Func<int> action)
+            => GetProcessStartInfo(GetMethodInfo(action), Array.Empty<string>());
+
+        public static ProcessStartInfo GetProcessStartInfo(Func<string[], int> action, string[] args)
+            => GetProcessStartInfo(GetMethodInfo(action), args ?? throw new ArgumentNullException(nameof(args)));
+
+        public static ProcessStartInfo GetProcessStartInfo(Func<Task> action)
+            => GetProcessStartInfo(GetMethodInfo(action), Array.Empty<string>());
+
+        public static ProcessStartInfo GetProcessStartInfo(Func<string[], Task> action, string[] args)
+            => GetProcessStartInfo(GetMethodInfo(action), args ?? throw new ArgumentNullException(nameof(args)));
+
+        public static ProcessStartInfo GetProcessStartInfo(Func<Task<int>> action)
+            => GetProcessStartInfo(GetMethodInfo(action), Array.Empty<string>());
+
+        public static ProcessStartInfo GetProcessStartInfo(Func<string[], Task<int>> action, string[] args)
+            => GetProcessStartInfo(GetMethodInfo(action), args ?? throw new ArgumentNullException(nameof(args)));
+
+        private static ProcessStartInfo GetProcessStartInfo(MethodInfo method, string[] args)
+        {
+            var psi = new ProcessStartInfo();
+            ConfigureProcessStartInfoForMethodInvocation(method, args, psi);
+            return psi;
+        }
+
         private static (Process process, Task exitedTask) Start(MethodInfo method, string[] args, Action<ExecFunctionOptions> configure, bool waitForExit = false, bool returnTask = false)
         {
             Process process = null;
