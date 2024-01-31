@@ -147,7 +147,8 @@ namespace Tmds.Utils
         {
             if (method.ReturnType != typeof(void) &&
                 method.ReturnType != typeof(int) &&
-                method.ReturnType != typeof(Task<int>))
+                method.ReturnType != typeof(Task<int>) &&
+                method.ReturnType != typeof(Task))
             {
                 throw new ArgumentException("method has an invalid return type", nameof(method));
             }

@@ -88,9 +88,13 @@ namespace Tmds.Utils
                         result = mi.Invoke(instance, new object[] { additionalArgs });
                     }
 
-                    if (result is Task<int> task)
+                    if (result is Task<int> taskOfInt)
                     {
-                        exitCode = task.GetAwaiter().GetResult();
+                        exitCode = taskOfInt.GetAwaiter().GetResult();
+                    }
+                    else if (result is Task task)
+                    {
+                        task.GetAwaiter().GetResult();
                     }
                     else if (result is int exit)
                     {
