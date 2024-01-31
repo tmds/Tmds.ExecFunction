@@ -32,6 +32,48 @@ namespace Tmds.Tests
         }
 
         [Fact]
+        public void TestArgVoidReturnTaskOfInt()
+        {
+            using (Process p = ExecFunction.Start(
+                async () =>
+                {
+                    // Yield to make the method return and validate we wait for the async function to complete.
+                    await Task.Yield();
+
+                    return 42;
+                }
+            ))
+            {
+                p.WaitForExit();
+                Assert.Equal(42, p.ExitCode);
+            };
+        }
+
+        [Theory]
+        [InlineData(true)]
+        [InlineData(false)]
+        public void TestArgVoidReturnTask(bool throwException)
+        {
+            using (Process p = ExecFunction.Start(
+                async (string[] args) =>
+                {
+                    // Yield to make the method return and validate we wait for the async function to complete.
+                    await Task.Yield();
+
+                    if (args[0] == "true")
+                    {
+                        throw new Exception();
+                    }
+                },
+                new[] { throwException ? "true" : "false" }
+            ))
+            {
+                p.WaitForExit();
+                Assert.Equal(throwException ? 134 : 0, p.ExitCode);
+            };
+        }
+
+        [Fact]
         public async Task RunAsync()
         {
             int? exitCode = null;
