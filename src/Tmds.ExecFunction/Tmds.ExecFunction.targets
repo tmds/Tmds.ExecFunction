@@ -1,9 +1,23 @@
 ﻿<Project>
-  <ItemGroup Condition="'$(Configuration)' == 'Debug'">
-    <PackageReference Include="EnvDTE" />
+  <PropertyGroup>
+    <EnableExecFunctionVsDebugging Condition="'$(EnableExecFunctionVsDebugging)' == '' And '$(Configuration)' == 'Debug'">true</EnableExecFunctionVsDebugging>
+    <EnvDTEVersion Condition="'$(EnvDTEVersion)' == ''">17.8.37221</EnvDTEVersion>
+  </PropertyGroup>
+
+  <ItemGroup Condition="'$(EnableExecFunctionVsDebugging)' == 'true' And '$(ManagePackageVersionsCentrally)' != 'true'">
+    <PackageReference Include="EnvDTE" Exclude="@(PackageReference)" Version="$(EnvDTEVersion)" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(EnableExecFunctionVsDebugging)' == 'true' And '$(ManagePackageVersionsCentrally)' == 'true'">
+    <PackageVersion Include="EnvDTE" Exclude="@(PackageVersion)" Version="$(EnvDTEVersion)" />
+    <PackageReference Include="EnvDTE" Exclude="@(PackageReference)" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(EnableExecFunctionVsDebugging)' == 'true'">
     <VsDebuggerFile Include="$(MSBuildThisFileDirectory)\..\tools\any\vsdebugger\**\*" />
   </ItemGroup>
-  <Target Name="CopyVsDebuggerFileOnBuild" Condition="'$(Configuration)' == 'Debug'" BeforeTargets="Build">
+
+  <Target Name="CopyVsDebuggerFileOnBuild" Condition="'$(EnableExecFunctionVsDebugging)' == 'true'" BeforeTargets="Build">
     <Copy SourceFiles="@(VsDebuggerFile)" DestinationFolder="$(TargetDir)\" />
   </Target>
 </Project>
