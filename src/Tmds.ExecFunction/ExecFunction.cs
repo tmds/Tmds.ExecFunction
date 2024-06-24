@@ -136,17 +136,31 @@ namespace Tmds.Utils
                     tcs = new TaskCompletionSource<bool>();
                 }
 
-                if (options.OnExit != null || tcs != null)
+                if ((options.OnExit != null && !!waitForExit) || tcs != null)
                 {
                     process.EnableRaisingEvents = true;
                     process.Exited += (_1, _2) =>
                     {
-                        options.OnExit(process);
-
                         if (tcs != null)
                         {
-                            tcs?.SetResult(true);
-                            process.Dispose();
+                            try
+                            {
+                                options.OnExit?.Invoke(process);
+                                tcs.SetResult(true);
+                            }
+                            catch (Exception ex)
+                            {
+                                tcs.SetException(ex);
+                            }
+                            finally
+                            {
+                                process.Dispose();
+                            }
+                        }
+                        else if (!waitForExit)
+                        {
+                            // If this throws, the exception is uncaught.
+                            options.OnExit?.Invoke(process);
                         }
                     };
                 }
@@ -156,6 +170,7 @@ namespace Tmds.Utils
                 if (waitForExit)
                 {
                     process.WaitForExit();
+                    options.OnExit?.Invoke(process);
                 }
 
                 return (process, tcs?.Task);
