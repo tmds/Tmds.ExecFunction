@@ -131,5 +131,32 @@ namespace Tmds.Tests
             Assert.Equal("hello world", outText);
         }
 
+        [Fact]
+        public async Task RunAsyncCapturesOnExitException()
+        {
+            await Assert.ThrowsAsync<ApplicationException>(() =>
+                ExecFunction.RunAsync(
+                    () => 42,
+                    o =>
+                    {
+                        o.OnExit = process => { throw new ApplicationException(); };
+                    }
+            ));
+        }
+
+        [Fact]
+        public void RunThrowsOnExitException()
+        {
+            Assert.Throws<ApplicationException>(() =>
+            {
+                ExecFunction.Run(
+                    () => 42,
+                    o =>
+                    {
+                        o.OnExit = process => { throw new ApplicationException(); };
+                    }
+                );
+            });
+    }
     }
 }
