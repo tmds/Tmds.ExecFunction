@@ -1,10 +1,18 @@
 [![NuGet](https://img.shields.io/nuget/v/Tmds.ExecFunction.svg)](https://www.nuget.org/packages/Tmds.ExecFunction)
+[![NuGet Downloads](https://img.shields.io/nuget/dt/Tmds.ExecFunction)](https://www.nuget.org/packages/Tmds.ExecFunction)
+[![License](https://img.shields.io/github/license/tmds/Tmds.ExecFunction)](https://github.com/tmds/Tmds.ExecFunction/blob/main/LICENSE)
 
 # Tmds.ExecFunction
 
 Tmds.ExecFunction is a library that makes it simple to execute a function in a separate process.
 This can be interesting for writing tests that require a separate process, or running some code with a different lifetime as the .NET application process.
 The library is based on the corefx RemoteExecutorTestBase class.
+
+### Sponsoring
+
+Tmds.ExecFunction is open source and free to use under the MIT license. If your organization depends on it, please consider [sponsoring its maintenance](https://github.com/sponsors/tmds).
+
+This isn't a support contract or a license fee — the source stays open and the rules stay simple. Sponsoring is a small, predictable way to help sustain the work that goes into bug fixes, security updates, and new features.
 
 # Supported platforms
 
